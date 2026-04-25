@@ -1,0 +1,521 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline Historia â€“ Cartas Imprimibles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       PANTALLA DE CONFIGURACION (solo en pantalla, nunca imprime)
+    ============================================================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body { font-family: 'Nunito', sans-serif; background: #0a0f1e; color: #d8e6ff; min-height: 100vh; }
+
+    .config-screen {
+      max-width: 720px; margin: 36px auto; padding: 32px;
+      background: #111a30; border-radius: 16px; border: 2px solid #2a4a7a;
+    }
+    .config-screen h1 {
+      font-family: 'Bungee'; font-size: 30px; color: #ffd700;
+      text-align: center; margin-bottom: 6px;
+    }
+    .config-screen h2 {
+      font-size: 15px; color: #8899bb; text-align: center;
+      font-weight: 700; margin-bottom: 28px;
+    }
+    .config-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .config-group { margin-bottom: 16px; }
+    .config-group label {
+      display: block; font-family: 'Bungee'; font-size: 13px;
+      color: #ffd700; margin-bottom: 6px;
+    }
+    .config-group select {
+      width: 100%; padding: 10px 14px; font-family: 'Nunito'; font-size: 15px; font-weight: 700;
+      background: #1a2744; color: #d8e6ff; border: 1px solid #3a5a8a; border-radius: 8px;
+    }
+    .config-group select:focus { outline: none; border-color: #ffd700; }
+    .btn-generate {
+      display: block; width: 100%; padding: 14px; margin-top: 20px;
+      font-family: 'Bungee'; font-size: 20px; color: #1a1020;
+      background: #ffa040; border: 2px solid #ffeebb; border-radius: 10px;
+      cursor: pointer; transition: background .15s;
+    }
+    .btn-generate:hover { background: #ffb868; }
+    .btn-print {
+      display: none; width: 100%; padding: 11px; margin-top: 10px;
+      font-family: 'Nunito'; font-size: 15px; font-weight: 800; color: #d8e6ff;
+      background: #2a4a7a; border: 1px solid #4a7aaa; border-radius: 8px; cursor: pointer;
+    }
+    .btn-print:hover { background: #3a5a8a; }
+
+    .instructions {
+      margin-top: 22px; padding: 16px 20px;
+      background: #0d1525; border-radius: 10px; border: 1px solid #2a3a5a;
+    }
+    .instructions h3 {
+      font-family: 'Bungee'; font-size: 14px; color: #ffd700; margin-bottom: 10px;
+    }
+    .instructions ol { padding-left: 18px; }
+    .instructions li {
+      font-size: 13px; color: #8ab0cc; line-height: 1.7; margin-bottom: 2px;
+    }
+    .instructions li b { color: #ffd700; }
+
+    .preview-area {
+      margin-top: 24px; padding: 16px 20px;
+      background: #0d1525; border-radius: 10px; border: 1px solid #2a3a5a;
+    }
+    .preview-area h3 {
+      font-family: 'Bungee'; font-size: 13px; color: #ffd700; margin-bottom: 10px;
+    }
+    .preview-list {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .preview-pill {
+      background: #1a2744; border: 1px solid #3a5a8a; border-radius: 20px;
+      padding: 4px 10px; font-size: 12px; font-weight: 800; color: #aaccff;
+    }
+    .preview-pill .py { color: #ffd700; font-family: 'Bungee'; }
+
+    /* ============================================================
+       AREA DE IMPRESION
+       â€“ Solo visible al imprimir
+       â€“ Invisible en pantalla
+    ============================================================ */
+    #print-area { display: none; }
+
+    @media print {
+      body { background: white; color: black; }
+      .config-screen { display: none !important; }
+      #print-area { display: block !important; }
+
+      /* â”€â”€ PÃ¡gina â”€â”€ */
+      @page { size: A4 portrait; margin: 8mm; }
+
+      .print-page {
+        page-break-after: always;
+      }
+      .print-page:last-of-type { page-break-after: auto; }
+
+      /* â”€â”€ Cabecera de pÃ¡gina â”€â”€ */
+      .page-header {
+        text-align: center; margin-bottom: 3mm;
+      }
+      .page-header .ph-title {
+        font-family: 'Bungee'; font-size: 13px; color: #333; letter-spacing: 1px;
+      }
+      .page-header .ph-sub {
+        font-family: 'Nunito'; font-size: 9px; color: #888; font-weight: 700;
+      }
+
+      /* â”€â”€ Indicador central de doblez â”€â”€ */
+      .fold-hint {
+        text-align: center; font-size: 7px; color: #bbb; font-family: 'Nunito';
+        font-weight: 800; letter-spacing: 2px; margin-bottom: 1mm;
+        /* LÃ­nea punteada vertical en el centro simulada con un border-bottom de un pseudo */
+      }
+
+      /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+         TIRA DE CARTA
+         Cada fila = 1 carta: [ANVERSO | âœ‚fold | REVERSO]
+         Al cortar la tira horizontalmente y doblar por el
+         centro, obtienes una carta doble cara lista.
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+      .card-strip {
+        display: flex;
+        height: 63mm;
+        border-top: 1px dashed #bbb;
+        page-break-inside: avoid;
+      }
+      .card-strip:last-of-type { border-bottom: 1px dashed #bbb; }
+
+      /* â”€â”€ ANVERSO (izquierda) â”€â”€ */
+      .card-front {
+        flex: 1;
+        padding: 3.5mm 4.5mm;
+        background: linear-gradient(135deg, #faf6ed 0%, #ede0c6 100%);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        /* LÃ­nea de doblez: borde derecho punteado */
+        border-right: 1.5px dashed #bbb;
+        overflow: hidden;
+      }
+
+      /* Acento de categorÃ­a: barra izquierda de color */
+      .card-front::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3mm;
+      }
+      .cat-politica .card-front::before    { background: #4477aa; }
+      .cat-militar .card-front::before     { background: #aa4444; }
+      .cat-exploracion .card-front::before { background: #3399aa; }
+      .cat-religion .card-front::before    { background: #7744aa; }
+      .cat-cultura .card-front::before     { background: #aa7733; }
+      .cat-economia .card-front::before    { background: #55883a; }
+      .cat-sociedad .card-front::before    { background: #997733; }
+
+      .cf-top {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        margin-bottom: 2mm; padding-left: 4mm;
+      }
+      .cf-id {
+        font-family: 'Nunito'; font-size: 8px; font-weight: 900; color: #bbb;
+      }
+      .cf-cat {
+        font-family: 'Nunito'; font-size: 7.5px; font-weight: 800;
+        text-transform: uppercase; color: white; padding: 1px 5px;
+        border-radius: 3px; letter-spacing: 0.5px;
+      }
+      .cat-politica .cf-cat    { background: #4477aa; }
+      .cat-militar .cf-cat     { background: #aa4444; }
+      .cat-exploracion .cf-cat { background: #3399aa; }
+      .cat-religion .cf-cat    { background: #7744aa; }
+      .cat-cultura .cf-cat     { background: #aa7733; }
+      .cat-economia .cf-cat    { background: #55883a; }
+      .cat-sociedad .cf-cat    { background: #997733; }
+
+      .cf-icon {
+        font-size: 26px; padding-left: 4mm; margin-bottom: 1.5mm;
+      }
+      .cf-hero-wrap {
+        margin-left: 4mm; margin-right: 1mm; margin-bottom: 2mm;
+        border-radius: 2mm; overflow: hidden; border: 0.35mm solid rgba(70, 60, 40, 0.28);
+        height: 18mm; background: #e9ddc4;
+      }
+      .cf-hero {
+        width: 100%; height: 100%; display: block; object-fit: cover;
+      }
+      .cf-title {
+        font-family: 'Nunito'; font-size: 13px; font-weight: 900;
+        color: #1a1a1a; line-height: 1.25; padding-left: 4mm;
+        margin-bottom: 2mm;
+      }
+      .cf-desc {
+        font-family: 'Nunito'; font-size: 10px; font-weight: 600;
+        color: #444; line-height: 1.4; padding-left: 4mm;
+        flex: 1;
+      }
+      .cf-hint {
+        font-family: 'Nunito'; font-size: 8px; font-weight: 700;
+        color: #999; font-style: italic; padding-left: 4mm; margin-top: 2mm;
+      }
+      .cf-bottom {
+        display: flex; align-items: center; padding-left: 4mm; margin-top: 2.5mm;
+      }
+      .cf-year-blank {
+        font-family: 'Bungee'; font-size: 10px; color: #bbb;
+        border: 1px dashed #ccc; padding: 1px 8px; border-radius: 3px;
+      }
+
+      /* â”€â”€ REVERSO (derecha) â”€â”€ */
+      .card-back {
+        flex: 1;
+        padding: 3.5mm 4.5mm;
+        background: linear-gradient(135deg, #0f1e3c 0%, #1a3266 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* DecoraciÃ³n sutil en el reverso */
+      .card-back::before {
+        content: 'âŒ›';
+        position: absolute;
+        font-size: 10mm;
+        opacity: 0.08;
+        bottom: 2.5mm; right: 3mm;
+        pointer-events: none;
+      }
+
+      .cb-label {
+        font-family: 'Nunito'; font-size: 7.5px; font-weight: 800;
+        color: rgba(255,255,255,0.3); letter-spacing: 2px;
+        text-transform: uppercase; margin-bottom: 3mm;
+      }
+      .cb-year {
+        font-family: 'Bungee'; font-size: 44px; color: #ffd700;
+        line-height: 1; letter-spacing: -1px;
+      }
+      .cb-title {
+        font-family: 'Nunito'; font-size: 9px; font-weight: 800;
+        color: rgba(255,255,255,0.55); margin-top: 3mm;
+        line-height: 1.3; max-width: 85mm;
+      }
+      .cb-footer {
+        position: absolute; bottom: 2.5mm;
+        font-family: 'Nunito'; font-size: 7px; font-weight: 700;
+        color: rgba(255,255,255,0.2); letter-spacing: 1px;
+      }
+
+      /* â”€â”€ PÃ¡gina de soluciÃ³n â”€â”€ */
+      .solution-page { padding: 2mm; }
+      .sol-title {
+        font-family: 'Bungee'; font-size: 16px; color: #333;
+        text-align: center; margin-bottom: 5mm;
+      }
+      .sol-sub {
+        font-family: 'Nunito'; font-size: 10px; color: #888;
+        text-align: center; margin-bottom: 5mm; font-weight: 700;
+      }
+      .sol-table { width: 100%; border-collapse: collapse; }
+      .sol-table th {
+        background: #1a3266; color: white; padding: 2mm 3mm;
+        font-family: 'Bungee'; font-size: 9px; text-align: left;
+        letter-spacing: 0.5px;
+      }
+      .sol-table td {
+        padding: 1.8mm 3mm; border-bottom: 1px solid #e0e0e0;
+        font-family: 'Nunito'; font-weight: 700; font-size: 9.5px; color: #333;
+        vertical-align: middle;
+      }
+      .sol-table tr:nth-child(even) td { background: #f7f7f7; }
+      .sol-table .tc-num { font-family: 'Bungee'; font-size: 11px; color: #1a3266; }
+      .sol-table .tc-year { font-family: 'Bungee'; font-size: 11px; color: #1a3266; }
+      .sol-table .tc-cat {
+        font-size: 8px; font-weight: 900; text-transform: uppercase; color: white;
+        padding: 1px 5px; border-radius: 3px; display: inline-block;
+      }
+    }/* end @media print */
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     PANTALLA DE CONFIGURACION
+============================================================ -->
+<div class="config-screen" id="config">
+  <h1>TIMELINE HISTORIA</h1>
+  <h2>Generador de cartas imprimibles</h2>
+
+  <div class="config-row">
+    <div class="config-group">
+      <label>Pack de eventos</label>
+      <select id="sel-pack">
+        <option value="edad_moderna">Edad Moderna (1440â€“1789)</option>
+        <option value="edad_contemporanea">Edad ContemporÃ¡nea (1808â€“2020)</option>
+        <option value="mixto">Mixto (ambas Ã©pocas)</option>
+      </select>
+    </div>
+    <div class="config-group">
+      <label>NÃºmero de cartas</label>
+      <select id="sel-count">
+        <option value="8">8 cartas</option>
+        <option value="12" selected>12 cartas</option>
+        <option value="16">16 cartas</option>
+        <option value="20">20 cartas</option>
+        <option value="28">28 cartas</option>
+        <option value="0">Todas las del pack</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="config-row">
+    <div class="config-group">
+      <label>SelecciÃ³n de cartas</label>
+      <select id="sel-order">
+        <option value="chrono">Primeras cronolÃ³gicamente</option>
+        <option value="random">Aleatorias</option>
+        <option value="last">Ãšltimas cronolÃ³gicamente</option>
+      </select>
+    </div>
+    <div class="config-group">
+      <label>Pistas en el anverso</label>
+      <select id="sel-hints">
+        <option value="yes" selected>SÃ­, mostrar pista</option>
+        <option value="no">No, sin pistas</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-generate" onclick="generate()">âœ‚ GENERAR CARTAS E IMPRIMIR</button>
+  <button class="btn-print" id="btn-print-direct" onclick="window.print()">ðŸ–¨ Volver a imprimir</button>
+
+  <div class="instructions">
+    <h3>âœ‚ CÃ³mo preparar las cartas</h3>
+    <ol>
+      <li>Haz clic en <b>GENERAR CARTAS</b> y selecciona imprimir en tu diÃ¡logo.</li>
+      <li>Imprime en <b>una sola cara</b> (no es doble cara).</li>
+      <li><b>Recorta cada tira horizontalmente</b> por las lÃ­neas de puntos.</li>
+      <li><b>Dobla por la lÃ­nea vertical del centro hacia atrÃ¡s</b> â€” con los textos hacia fuera (anverso e izquierda, reverso a la derecha).</li>
+      <li>Grapa o pega con un toque de pegamento â†’ Â¡carta lista!</li>
+      <li>El anverso muestra el evento; dale la vuelta y verÃ¡s el aÃ±o en grande.</li>
+    </ol>
+  </div>
+
+  <div class="preview-area" id="preview-area" style="display:none">
+    <h3>ðŸ“‹ Cartas seleccionadas en orden cronolÃ³gico</h3>
+    <div class="preview-list" id="preview-list"></div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+
+<script src="data.js"></script>
+<script>
+  const TD = window.TIMELINE_DATA;
+
+  const CAT_ICON = {
+    politica: 'ðŸ“œ', militar: 'âš”ï¸', exploracion: 'ðŸ§­',
+    religion: 'â›ª', cultura: 'ðŸŽ¨', economia: 'ðŸ’°', sociedad: 'ðŸ‘¥'
+  };
+  const CAT_LABEL = {
+    politica: 'PolÃ­tica', militar: 'Militar', exploracion: 'ExploraciÃ³n',
+    religion: 'ReligiÃ³n', cultura: 'Cultura', economia: 'EconomÃ­a', sociedad: 'Sociedad'
+  };
+  const CAT_COLOR = {
+    politica: '#4477aa', militar: '#aa4444', exploracion: '#3399aa',
+    religion: '#7744aa', cultura: '#aa7733', economia: '#55883a', sociedad: '#997733'
+  };
+  const EVENT_VISUALS = (TD && TD.VISUALS && TD.VISUALS.events) || {};
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function generate() {
+    const packId   = document.getElementById('sel-pack').value;
+    const countVal = parseInt(document.getElementById('sel-count').value) || 0;
+    const order    = document.getElementById('sel-order').value;
+    const hints    = document.getElementById('sel-hints').value === 'yes';
+
+    const pack = TD.getPack(packId);
+
+    // 1. Ordenar cronolÃ³gicamente siempre
+    let events = [...pack.events].sort((a, b) =>
+      a.year !== b.year ? a.year - b.year : a.id.localeCompare(b.id)
+    );
+
+    // 2. SelecciÃ³n segÃºn criterio
+    if (countVal > 0 && countVal < events.length) {
+      if (order === 'random') {
+        events = shuffle(events).slice(0, countVal);
+        events.sort((a, b) => a.year !== b.year ? a.year - b.year : a.id.localeCompare(b.id));
+      } else if (order === 'last') {
+        events = events.slice(events.length - countVal);
+      } else {
+        // 'chrono' â†’ primeras cronolÃ³gicamente
+        events = events.slice(0, countVal);
+      }
+    }
+    // si countVal === 0 â†’ todas, ya ordenadas
+
+    // 3. Preview en pantalla
+    const prevArea = document.getElementById('preview-area');
+    const prevList = document.getElementById('preview-list');
+    prevArea.style.display = 'block';
+    prevList.innerHTML = events.map(ev =>
+      `<div class="preview-pill"><span class="py">${ev.year}</span> ${ev.title}</div>`
+    ).join('');
+
+    // 4. Generar HTML de impresiÃ³n
+    const perPage = 4; // 4 tiras por folio A4 (63mm Ã— 4 = 252mm â‰¤ 281mm disponibles)
+    const totalCardPages = Math.ceil(events.length / perPage);
+    let html = '';
+
+    for (let p = 0; p < totalCardPages; p++) {
+      const pageEvs = events.slice(p * perPage, (p + 1) * perPage);
+      const isLast  = p === totalCardPages - 1;
+
+      html += `<div class="print-page">`;
+
+      // Cabecera de pÃ¡gina
+      html += `
+        <div class="page-header">
+          <div class="ph-title">TIMELINE HISTORIA â€“ ${pack.title.toUpperCase()}</div>
+          <div class="ph-sub">Recorta cada tira â€¢ Dobla por la lÃ­nea central punteada â€¢ Grapa o pega</div>
+        </div>`;
+
+      // Tiras de cartas
+      pageEvs.forEach(ev => {
+        const catClass = `cat-${ev.category || 'politica'}`;
+        const icon     = CAT_ICON[ev.category]  || 'ðŸ“œ';
+        const catLbl   = CAT_LABEL[ev.category] || 'Historia';
+        const visual   = EVENT_VISUALS[ev.id];
+        const heroHtml = visual
+          ? `<div class="cf-hero-wrap"><img class="cf-hero" src="${visual.src}" alt=""></div>`
+          : `<div class="cf-icon">${icon}</div>`;
+
+        html += `
+          <div class="card-strip ${catClass}">
+
+            <!-- ANVERSO -->
+            <div class="card-front">
+              <div class="cf-top">
+                <span class="cf-id">${ev.id}</span>
+                <span class="cf-cat">${catLbl}</span>
+              </div>
+              ${heroHtml}
+              <div class="cf-title">${ev.title}</div>
+              <div class="cf-desc">${ev.description}</div>
+              ${hints ? `<div class="cf-hint">ðŸ’¡ ${ev.hint}</div>` : ''}
+              <div class="cf-bottom">
+                <span class="cf-year-blank">AÃ‘O: ___________</span>
+              </div>
+            </div>
+
+            <!-- REVERSO (espejado con scaleX(-1), queda correcto al doblar) -->
+            <div class="card-back">
+              <div class="cb-label">TIMELINE HISTORIA</div>
+              <div class="cb-year">${ev.year}</div>
+              <div class="cb-title">${ev.title}</div>
+              <div class="cb-footer">${pack.title}</div>
+            </div>
+
+          </div>`;
+      });
+
+      // Relleno si la pÃ¡gina no estÃ¡ completa (mantiene la altura)
+      for (let i = pageEvs.length; i < perPage; i++) {
+        html += `<div class="card-strip" style="border-top-color:transparent; opacity:0; pointer-events:none"></div>`;
+      }
+
+      html += `</div>`; // .print-page
+    }
+
+    // â”€â”€ Hoja de soluciÃ³n (Ãºltima pÃ¡gina) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    html += `<div class="print-page solution-page">`;
+    html += `<div class="sol-title">SOLUCIÃ“N â€” Solo para el profesor</div>`;
+    html += `<div class="sol-sub">${pack.title} Â· ${events.length} eventos Â· ordenados cronolÃ³gicamente</div>`;
+    html += `<table class="sol-table">
+      <tr>
+        <th>#</th><th>ID</th><th>AÃ±o</th><th>Evento</th>
+        <th>CategorÃ­a</th>
+        ${TD.ACHIEVEMENTS ? '' : ''}
+      </tr>`;
+    events.forEach((ev, i) => {
+      const bg  = CAT_COLOR[ev.category] || '#666';
+      const lbl = CAT_LABEL[ev.category] || '-';
+      html += `<tr>
+        <td class="tc-num">${i + 1}</td>
+        <td>${ev.id}</td>
+        <td class="tc-year">${ev.year}</td>
+        <td>${ev.title}</td>
+        <td><span class="tc-cat" style="background:${bg}">${lbl}</span></td>
+      </tr>`;
+    });
+    html += `</table>`;
+    html += `</div>`;
+
+    document.getElementById('print-area').innerHTML = html;
+    document.getElementById('btn-print-direct').style.display = 'block';
+
+    setTimeout(() => window.print(), 400);
+  }
+</script>
+</body>
+</html>
+

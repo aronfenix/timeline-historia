@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Timeline Historia - Aventura Cronologica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #060d1a; }
+    #game-container { width: 100vw; height: 100vh; }
+    #game-container canvas { display: block; margin: 0 auto; }
+    .launch-warning {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, #17305a 0%, #060d1a 58%);
+      color: #dbe8ff;
+      font-family: 'Nunito', sans-serif;
+    }
+    .launch-warning__panel {
+      width: min(720px, 92vw);
+      background: rgba(13, 24, 41, 0.92);
+      border: 2px solid #3a5a8a;
+      border-radius: 18px;
+      padding: 28px 32px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+    }
+    .launch-warning h1 {
+      font-family: 'Bungee', cursive;
+      font-size: 30px;
+      line-height: 1.2;
+      color: #ffd700;
+      margin-bottom: 14px;
+    }
+    .launch-warning p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .launch-warning code {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #13233d;
+      color: #ffe9a1;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.body.innerHTML = `
+        <div class="launch-warning">
+          <div class="launch-warning__panel">
+            <h1>Abre el juego con el servidor local</h1>
+            <p>Estabas abriendo <code>index.html</code> directamente y esta version con imagenes nuevas necesita ejecutarse desde <code>http://localhost:8091</code>.</p>
+            <p>Haz doble clic en <code>iniciar_timeline.bat</code> dentro de esta carpeta.</p>
+            <p>Si prefieres hacerlo manualmente: abre una terminal aqui y ejecuta <code>node server.js</code>. Despues entra en <code>http://localhost:8091</code>.</p>
+          </div>
+        </div>`;
+      throw new Error('Timeline Historia debe abrirse mediante server.js y no con file://');
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+  <script src="data.js?v=20260425b"></script>
+  <script src="audio.js?v=20260425b"></script>
+  <script src="effects.js?v=20260425b"></script>
+  <script src="sprites.js?v=20260425b"></script>
+  <script src="game.js?v=20260425b"></script>
+</body>
+</html>
