@@ -1911,7 +1911,7 @@
 
       const statusLabel = isOnlineLeaderboardConfigured()
         ? 'Ranking online activo'
-        : 'Ranking local: configura leaderboard.config.js para compartirlo entre casas';
+        : 'Ranking de este dispositivo';
       this.add.text(W / 2, 72, statusLabel, {
         fontFamily: 'Nunito', fontSize: '14px',
         color: isOnlineLeaderboardConfigured() ? '#6bcb77' : '#ffcc66',
