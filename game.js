@@ -153,7 +153,7 @@
     return ['localhost', '127.0.0.1'].includes(window.location.hostname);
   }
   function isOnlineLeaderboardConfigured() {
-    return !!API_BASE || canUseRelativeApi();
+    return !!(window.timelineLeaderboardManager && window.timelineLeaderboardManager.isFirebaseEnabled) || !!API_BASE || canUseRelativeApi();
   }
   function apiUrl(path) {
     if (API_BASE) return `${API_BASE}${path}`;
@@ -233,10 +233,19 @@
     localEntries.push(localEntry);
     saveLocalLeaderboard(mergeLeaderboardEntries(localEntries, []));
 
+    if (window.timelineLeaderboardManager) {
+      return await window.timelineLeaderboardManager.saveScore(localEntry);
+    }
     return await apiPost('/api/score', entry);
   }
   async function fetchLeaderboardEntries() {
     const localEntries = loadLocalLeaderboard();
+    if (window.timelineLeaderboardManager && window.timelineLeaderboardManager.isFirebaseEnabled) {
+      const firebaseEntries = await window.timelineLeaderboardManager.getScores(50);
+      const mergedFirebase = mergeLeaderboardEntries(firebaseEntries, localEntries);
+      if (mergedFirebase.length) saveLocalLeaderboard(mergedFirebase);
+      return mergedFirebase;
+    }
     const remotePayload = await apiGet('/api/leaderboard');
     const remoteEntries = normalizeLeaderboardData(remotePayload);
     const merged = mergeLeaderboardEntries(remoteEntries, localEntries);
