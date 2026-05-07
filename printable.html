@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timeline Historia â€“ Cartas Imprimibles</title>
+  <title>Timeline Historia - Cartas Imprimibles</title>
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
@@ -160,7 +160,7 @@
       .cat-sociedad .card-front::before    { background: #997733; }
 
       .cf-top {
-        display: flex; justify-content: space-between; align-items: flex-start;
+        display: flex; justify-content: flex-end; align-items: flex-start;
         margin-bottom: 2mm; padding-left: 4mm;
       }
       .cf-id {
@@ -228,7 +228,7 @@
 
       /* DecoraciÃ³n sutil en el reverso */
       .card-back::before {
-        content: 'âŒ›';
+        content: '⌛';
         position: absolute;
         font-size: 10mm;
         opacity: 0.08;
@@ -300,13 +300,13 @@
     <div class="config-group">
       <label>Pack de eventos</label>
       <select id="sel-pack">
-        <option value="edad_moderna">Edad Moderna (1440â€“1789)</option>
-        <option value="edad_contemporanea">Edad ContemporÃ¡nea (1808â€“2020)</option>
-        <option value="mixto">Mixto (ambas Ã©pocas)</option>
+        <option value="edad_moderna">Edad Moderna (1440-1789)</option>
+        <option value="edad_contemporanea">Edad Contemporanea (1808-2020)</option>
+        <option value="mixto">Mixto (ambas epocas)</option>
       </select>
     </div>
     <div class="config-group">
-      <label>NÃºmero de cartas</label>
+      <label>Numero de cartas</label>
       <select id="sel-count">
         <option value="8">8 cartas</option>
         <option value="12" selected>12 cartas</option>
@@ -320,39 +320,39 @@
 
   <div class="config-row">
     <div class="config-group">
-      <label>SelecciÃ³n de cartas</label>
+      <label>Seleccion de cartas</label>
       <select id="sel-order">
-        <option value="chrono">Primeras cronolÃ³gicamente</option>
+        <option value="chrono">Primeras cronologicamente</option>
         <option value="random">Aleatorias</option>
-        <option value="last">Ãšltimas cronolÃ³gicamente</option>
+        <option value="last">Ultimas cronologicamente</option>
       </select>
     </div>
     <div class="config-group">
       <label>Pistas en el anverso</label>
       <select id="sel-hints">
-        <option value="yes" selected>SÃ­, mostrar pista</option>
+        <option value="yes" selected>Si, mostrar pista</option>
         <option value="no">No, sin pistas</option>
       </select>
     </div>
   </div>
 
-  <button class="btn-generate" onclick="generate()">âœ‚ GENERAR CARTAS E IMPRIMIR</button>
-  <button class="btn-print" id="btn-print-direct" onclick="window.print()">ðŸ–¨ Volver a imprimir</button>
+  <button class="btn-generate" onclick="generate()">GENERAR CARTAS E IMPRIMIR</button>
+  <button class="btn-print" id="btn-print-direct" onclick="window.print()">Volver a imprimir</button>
 
   <div class="instructions">
-    <h3>âœ‚ CÃ³mo preparar las cartas</h3>
+    <h3>Como preparar las cartas</h3>
     <ol>
-      <li>Haz clic en <b>GENERAR CARTAS</b> y selecciona imprimir en tu diÃ¡logo.</li>
+      <li>Haz clic en <b>GENERAR CARTAS</b> y selecciona imprimir en tu dialogo.</li>
       <li>Imprime en <b>una sola cara</b> (no es doble cara).</li>
-      <li><b>Recorta cada tira horizontalmente</b> por las lÃ­neas de puntos.</li>
-      <li><b>Dobla por la lÃ­nea vertical del centro hacia atrÃ¡s</b> â€” con los textos hacia fuera (anverso e izquierda, reverso a la derecha).</li>
-      <li>Grapa o pega con un toque de pegamento â†’ Â¡carta lista!</li>
-      <li>El anverso muestra el evento; dale la vuelta y verÃ¡s el aÃ±o en grande.</li>
+      <li><b>Recorta cada tira horizontalmente</b> por las lineas de puntos.</li>
+      <li><b>Dobla por la linea vertical del centro hacia atras</b> - con los textos hacia fuera (anverso a la izquierda, reverso a la derecha).</li>
+      <li>Grapa o pega con un toque de pegamento y carta lista.</li>
+      <li>El anverso muestra el evento; dale la vuelta y veras el ano en grande.</li>
     </ol>
   </div>
 
   <div class="preview-area" id="preview-area" style="display:none">
-    <h3>ðŸ“‹ Cartas seleccionadas en orden cronolÃ³gico</h3>
+    <h3>Cartas seleccionadas en orden cronologico</h3>
     <div class="preview-list" id="preview-list"></div>
   </div>
 </div>
@@ -364,12 +364,12 @@
   const TD = window.TIMELINE_DATA;
 
   const CAT_ICON = {
-    politica: 'ðŸ“œ', militar: 'âš”ï¸', exploracion: 'ðŸ§­',
-    religion: 'â›ª', cultura: 'ðŸŽ¨', economia: 'ðŸ’°', sociedad: 'ðŸ‘¥'
+    politica: '\u{1F4DC}', militar: '\u2694\uFE0F', exploracion: '\u{1F9ED}',
+    religion: '\u26EA', cultura: '\u{1F3A8}', economia: '\u{1F4B0}', sociedad: '\u{1F465}'
   };
   const CAT_LABEL = {
-    politica: 'PolÃ­tica', militar: 'Militar', exploracion: 'ExploraciÃ³n',
-    religion: 'ReligiÃ³n', cultura: 'Cultura', economia: 'EconomÃ­a', sociedad: 'Sociedad'
+    politica: 'Politica', militar: 'Militar', exploracion: 'Exploracion',
+    religion: 'Religion', cultura: 'Cultura', economia: 'Economia', sociedad: 'Sociedad'
   };
   const CAT_COLOR = {
     politica: '#4477aa', militar: '#aa4444', exploracion: '#3399aa',
@@ -432,17 +432,17 @@
 
       html += `<div class="print-page">`;
 
-      // Cabecera de pÃ¡gina
+      // Cabecera de pagina
       html += `
         <div class="page-header">
-          <div class="ph-title">TIMELINE HISTORIA â€“ ${pack.title.toUpperCase()}</div>
-          <div class="ph-sub">Recorta cada tira â€¢ Dobla por la lÃ­nea central punteada â€¢ Grapa o pega</div>
+          <div class="ph-title">TIMELINE HISTORIA - ${pack.title.toUpperCase()}</div>
+          <div class="ph-sub">Recorta cada tira - Dobla por la linea central punteada - Grapa o pega</div>
         </div>`;
 
       // Tiras de cartas
       pageEvs.forEach(ev => {
         const catClass = `cat-${ev.category || 'politica'}`;
-        const icon     = CAT_ICON[ev.category]  || 'ðŸ“œ';
+        const icon     = CAT_ICON[ev.category]  || '\u{1F4DC}';
         const catLbl   = CAT_LABEL[ev.category] || 'Historia';
         const visual   = EVENT_VISUALS[ev.id];
         const heroHtml = visual
@@ -455,15 +455,14 @@
             <!-- ANVERSO -->
             <div class="card-front">
               <div class="cf-top">
-                <span class="cf-id">${ev.id}</span>
                 <span class="cf-cat">${catLbl}</span>
               </div>
               ${heroHtml}
               <div class="cf-title">${ev.title}</div>
               <div class="cf-desc">${ev.description}</div>
-              ${hints ? `<div class="cf-hint">ðŸ’¡ ${ev.hint}</div>` : ''}
+              ${hints ? `<div class="cf-hint">Pista: ${ev.hint}</div>` : ''}
               <div class="cf-bottom">
-                <span class="cf-year-blank">AÃ‘O: ___________</span>
+                <span class="cf-year-blank">ANO: ___________</span>
               </div>
             </div>
 
@@ -486,14 +485,14 @@
       html += `</div>`; // .print-page
     }
 
-    // â”€â”€ Hoja de soluciÃ³n (Ãºltima pÃ¡gina) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Hoja de solucion (ultima pagina)
     html += `<div class="print-page solution-page">`;
-    html += `<div class="sol-title">SOLUCIÃ“N â€” Solo para el profesor</div>`;
-    html += `<div class="sol-sub">${pack.title} Â· ${events.length} eventos Â· ordenados cronolÃ³gicamente</div>`;
+    html += `<div class="sol-title">SOLUCION - Solo para el profesor</div>`;
+    html += `<div class="sol-sub">${pack.title} · ${events.length} eventos · ordenados cronologicamente</div>`;
     html += `<table class="sol-table">
       <tr>
-        <th>#</th><th>ID</th><th>AÃ±o</th><th>Evento</th>
-        <th>CategorÃ­a</th>
+        <th>#</th><th>ID</th><th>Ano</th><th>Evento</th>
+        <th>Categoria</th>
         ${TD.ACHIEVEMENTS ? '' : ''}
       </tr>`;
     events.forEach((ev, i) => {

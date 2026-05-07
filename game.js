@@ -146,16 +146,32 @@
   }
 
   // --- Server API ---
-  const API_BASE = '';
+  const ONLINE_API = window.TIMELINE_ONLINE_API || {};
+  const API_BASE = String(ONLINE_API.baseUrl || '').replace(/\/+$/, '');
   const LOCAL_LB_KEY = 'timeline_historia_v3_leaderboard';
+  function canUseRelativeApi() {
+    return ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  }
+  function isOnlineLeaderboardConfigured() {
+    return !!API_BASE || canUseRelativeApi();
+  }
+  function apiUrl(path) {
+    if (API_BASE) return `${API_BASE}${path}`;
+    if (canUseRelativeApi()) return path;
+    return null;
+  }
   async function apiPost(url, data) {
+    const target = apiUrl(url);
+    if (!target) return null;
     try {
-      const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const r = await fetch(target, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       return await r.json();
     } catch (e) { return null; }
   }
   async function apiGet(url) {
-    try { const r = await fetch(url); return await r.json(); } catch (e) { return null; }
+    const target = apiUrl(url);
+    if (!target) return null;
+    try { const r = await fetch(target); return await r.json(); } catch (e) { return null; }
   }
   function loadLocalLeaderboard() {
     try {
@@ -172,24 +188,23 @@
     if (payload && Array.isArray(payload.players)) return payload.players;
     return [];
   }
+  function playerScoreKey(entry) {
+    return String(entry && entry.name ? entry.name : '').trim().toLowerCase();
+  }
   function mergeLeaderboardEntries(primary, secondary) {
-    const out = [];
-    const seen = new Set();
+    const bestByPlayer = new Map();
     [...primary, ...secondary].forEach(entry => {
       if (!entry) return;
-      const key = [
-        entry.name || '',
-        entry.avatar || '',
-        entry.score || 0,
-        entry.mode || '',
-        entry.packId || '',
-        entry.difficulty || '',
-        entry.date || ''
-      ].join('|');
-      if (seen.has(key)) return;
-      seen.add(key);
-      out.push(entry);
+      const key = playerScoreKey(entry);
+      if (!key) return;
+      const current = bestByPlayer.get(key);
+      const score = entry.score || 0;
+      const currentScore = current ? (current.score || 0) : -1;
+      if (!current || score > currentScore || (score === currentScore && String(entry.date || '').localeCompare(String(current.date || '')) > 0)) {
+        bestByPlayer.set(key, entry);
+      }
     });
+    const out = [...bestByPlayer.values()];
     out.sort((a, b) => {
       if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
       return String(b.date || '').localeCompare(String(a.date || ''));
@@ -430,7 +445,7 @@
       this.selDiff = 'normal';
       this.selRounds = 3;
       this.selMode = 'classic';
-      try { Audio.playMenuMusic(); } catch (e) { }
+      try { Audio.playMenuMusicV3 ? Audio.playMenuMusicV3() : Audio.playMenuMusic(); } catch (e) { }
 
       // Animated BG
       this.add.rectangle(W / 2, H / 2, W, H, 0x080e1e);
@@ -552,7 +567,7 @@
 
       // Audio toggles (top right)
       const musicBtn = this.add.text(W - 30, 20, 'Musica: ON', { fontFamily: 'Nunito', fontSize: '15px', color: '#6688aa', fontStyle: '700' }).setOrigin(1, 0).setInteractive({ useHandCursor: true }).setDepth(5);
-      musicBtn.on('pointerdown', () => { const on = Audio.toggleMusic(); musicBtn.setText(`Musica: ${on ? 'ON' : 'OFF'}`); if (on) try { Audio.playMenuMusic(); } catch (e) { } });
+      musicBtn.on('pointerdown', () => { const on = Audio.toggleMusic(); musicBtn.setText(`Musica: ${on ? 'ON' : 'OFF'}`); if (on) try { Audio.playMenuMusicV3 ? Audio.playMenuMusicV3() : Audio.playMenuMusic(); } catch (e) { } });
       const sfxBtn = this.add.text(W - 30, 42, 'Efectos: ON', { fontFamily: 'Nunito', fontSize: '15px', color: '#6688aa', fontStyle: '700' }).setOrigin(1, 0).setInteractive({ useHandCursor: true }).setDepth(5);
       sfxBtn.on('pointerdown', () => { const on = Audio.toggleSfx(); sfxBtn.setText(`Efectos: ${on ? 'ON' : 'OFF'}`); });
 
@@ -1892,6 +1907,15 @@
 
       const loadingText = this.add.text(W / 2, H / 2, 'Cargando...', {
         fontFamily: 'Nunito', fontSize: '22px', color: '#8cb6ff', fontStyle: '700'
+      }).setOrigin(0.5);
+
+      const statusLabel = isOnlineLeaderboardConfigured()
+        ? 'Ranking online activo'
+        : 'Ranking local: configura leaderboard.config.js para compartirlo entre casas';
+      this.add.text(W / 2, 72, statusLabel, {
+        fontFamily: 'Nunito', fontSize: '14px',
+        color: isOnlineLeaderboardConfigured() ? '#6bcb77' : '#ffcc66',
+        fontStyle: '800'
       }).setOrigin(0.5);
 
       const backBtn = makeBtn(this, W / 2, H - 40, 200, 44, 'Volver', { primary: true });

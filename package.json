@@ -1,0 +1,12 @@
+{
+  "name": "timeline-historia",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check game.js && node --check data.js && node --check audio.js && node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

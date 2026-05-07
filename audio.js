@@ -401,6 +401,59 @@ window.AudioManager = (() => {
       } catch (e) {}
     }, beatDur * 1000);
 
+    // Soft cinematic drums and short brass-like calls. Kept synthetic so the
+    // online version has no licensed audio dependency.
+    let beatIndex = 0;
+    const drumInterval = setInterval(() => {
+      if (!running || !musicEnabled) { clearInterval(drumInterval); return; }
+      try {
+        const c2 = getCtx(); if (!c2) return;
+        const now = c2.currentTime;
+        const accent = beatIndex % 4 === 0;
+
+        const kick = c2.createOscillator();
+        const kickG = c2.createGain();
+        kick.type = 'sine';
+        kick.frequency.setValueAtTime(accent ? 92 : 68, now);
+        kick.frequency.exponentialRampToValueAtTime(42, now + 0.18);
+        kickG.gain.setValueAtTime(accent ? 0.12 : 0.055, now);
+        kickG.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        kick.connect(kickG); kickG.connect(g);
+        kick.start(now); kick.stop(now + 0.24);
+
+        if (beatIndex % 8 === 4) {
+          const noise = c2.createBufferSource();
+          const buf = c2.createBuffer(1, Math.floor(c2.sampleRate * 0.08), c2.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+          noise.buffer = buf;
+          const filt = c2.createBiquadFilter();
+          filt.type = 'bandpass';
+          filt.frequency.value = 420;
+          const snareG = c2.createGain();
+          snareG.gain.setValueAtTime(0.045, now);
+          snareG.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          noise.connect(filt); filt.connect(snareG); snareG.connect(g);
+          noise.start(now); noise.stop(now + 0.12);
+        }
+
+        if (beatIndex % 16 === 0) {
+          const chord = chords[chordIdx];
+          chord.forEach((f, i) => {
+            const horn = c2.createOscillator();
+            const hornG = c2.createGain();
+            horn.type = 'sawtooth';
+            horn.frequency.value = f * 2;
+            hornG.gain.setValueAtTime(0.018 / (i + 1), now + i * 0.04);
+            hornG.gain.exponentialRampToValueAtTime(0.001, now + 0.75 + i * 0.04);
+            horn.connect(hornG); hornG.connect(g);
+            horn.start(now + i * 0.04); horn.stop(now + 0.85 + i * 0.04);
+          });
+        }
+        beatIndex++;
+      } catch (e) {}
+    }, beatDur * 500);
+
     // Fade in
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(1.0, t + 2.0);
@@ -410,6 +463,7 @@ window.AudioManager = (() => {
         running = false;
         clearInterval(chordInterval);
         clearInterval(pulseInterval);
+        clearInterval(drumInterval);
         try { pads.forEach(p => p.osc.stop()); } catch(e){}
       },
       gainNode: g

@@ -4,7 +4,7 @@ const path = require('path');
 
 const PORT = process.env.PORT || 8091;
 const DIR = __dirname;
-const DATA_DIR = path.join(DIR, 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(DIR, 'data');
 const PLAYERS_FILE = path.join(DATA_DIR, 'players.json');
 const LEADERBOARD_FILE = path.join(DATA_DIR, 'leaderboard.json');
 
@@ -45,6 +45,28 @@ function writeJSON(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
+function cleanName(name) {
+  return String(name || '').trim().replace(/\s+/g, ' ').slice(0, 24);
+}
+
+function bestLeaderboard(entries) {
+  const bestByName = new Map();
+  (Array.isArray(entries) ? entries : []).forEach(entry => {
+    if (!entry || !entry.name) return;
+    const key = cleanName(entry.name).toLowerCase();
+    if (!key) return;
+    const current = bestByName.get(key);
+    const score = Number(entry.score) || 0;
+    const currentScore = current ? (Number(current.score) || 0) : -1;
+    if (!current || score > currentScore || (score === currentScore && String(entry.date || '').localeCompare(String(current.date || '')) > 0)) {
+      bestByName.set(key, { ...entry, name: cleanName(entry.name), score });
+    }
+  });
+  return [...bestByName.values()]
+    .sort((a, b) => (b.score || 0) - (a.score || 0) || String(b.date || '').localeCompare(String(a.date || '')))
+    .slice(0, 50);
+}
+
 // --- Request helpers ---
 
 function parseBody(req) {
@@ -80,7 +102,10 @@ function addCORS(res) {
 // --- API route handlers ---
 
 async function handlePlayerCreate(req, res) {
-  const { name, avatar } = await parseBody(req);
+  const body = await parseBody(req);
+  const name = cleanName(body.name);
+  const avatar = body.avatar;
+
   if (!name) {
     return sendJSON(res, 400, { error: 'name is required' });
   }
@@ -108,13 +133,13 @@ async function handlePlayerCreate(req, res) {
 
 function handleLeaderboard(req, res) {
   const entries = readJSON(LEADERBOARD_FILE);
-  const sorted = entries.sort((a, b) => b.score - a.score).slice(0, 50);
-  sendJSON(res, 200, { players: sorted });
+  sendJSON(res, 200, { players: bestLeaderboard(entries) });
 }
 
 async function handleScoreSubmit(req, res) {
   const body = await parseBody(req);
-  const { playerName, avatar, score, mode, packId, difficulty, correct, wrong, bestCombo, xp, level } = body;
+  const { avatar, score, mode, packId, difficulty, correct, wrong, bestCombo, xp, level } = body;
+  const playerName = cleanName(body.playerName);
 
   if (!playerName || score === undefined) {
     return sendJSON(res, 400, { error: 'playerName and score are required' });
@@ -123,7 +148,7 @@ async function handleScoreSubmit(req, res) {
   const entry = {
     name: playerName,
     avatar: avatar || 'default',
-    score: score || 0,
+    score: Number(score) || 0,
     mode: mode || 'classic',
     packId: packId || '',
     difficulty: difficulty || 'normal',
@@ -139,8 +164,8 @@ async function handleScoreSubmit(req, res) {
   entries.push(entry);
   writeJSON(LEADERBOARD_FILE, entries);
 
-  const sorted = entries.sort((a, b) => b.score - a.score);
-  const rank = sorted.findIndex(e => e === entry) + 1;
+  const sorted = bestLeaderboard(entries);
+  const rank = sorted.findIndex(e => e.name.toLowerCase() === playerName.toLowerCase()) + 1;
 
   sendJSON(res, 200, { success: true, rank });
 }
@@ -164,6 +189,9 @@ http.createServer(async (req, res) => {
 
   // API routes
   try {
+    if (url === '/api/health' && method === 'GET') {
+      return sendJSON(res, 200, { ok: true, service: 'timeline-historia-api' });
+    }
     if (url === '/api/player' && method === 'POST') {
       return await handlePlayerCreate(req, res);
     }
@@ -179,7 +207,12 @@ http.createServer(async (req, res) => {
   }
 
   // Static file serving
-  let filePath = path.join(DIR, url === '/' ? '/index.html' : url);
+  let filePath = path.normalize(path.join(DIR, url === '/' ? '/index.html' : url));
+  if (!filePath.startsWith(DIR)) {
+    res.writeHead(403);
+    res.end('Forbidden');
+    return;
+  }
   const ext = path.extname(filePath);
 
   fs.readFile(filePath, (err, data) => {

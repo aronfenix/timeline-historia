@@ -40,10 +40,13 @@ window.TIMELINE_DATA = (() => {
       scribe:   { key: 'avatar_scribe', src: 'assets/images/avatars/scribe.png' }
     },
     events: {
+      M01: { key: 'event_M01', src: 'assets/images/events/M01-imprenta-gutenberg.png' },
       M05: { key: 'event_M05', src: 'assets/images/events/M05-primer-viaje-colon.png' },
       M20: { key: 'event_M20', src: 'assets/images/events/M20-primera-vuelta-mundo.png' },
+      M26: { key: 'event_M26', src: 'assets/images/events/M26-batalla-lepanto.png' },
       C02: { key: 'event_C02', src: 'assets/images/events/C02-constitucion-cadiz.png' },
       C23: { key: 'event_C23', src: 'assets/images/events/C23-segunda-republica.png' },
+      C28: { key: 'event_C28', src: 'assets/images/events/C28-bombardeo-guernica.png' },
       C36: { key: 'event_C36', src: 'assets/images/events/C36-constitucion-1978.png' },
       C48: { key: 'event_C48', src: 'assets/images/events/C48-pandemia-covid.png' }
     }
