@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -162,9 +162,6 @@
       .cf-top {
         display: flex; justify-content: flex-end; align-items: flex-start;
         margin-bottom: 2mm; padding-left: 4mm;
-      }
-      .cf-id {
-        font-family: 'Nunito'; font-size: 8px; font-weight: 900; color: #bbb;
       }
       .cf-cat {
         font-family: 'Nunito'; font-size: 7.5px; font-weight: 800;
@@ -347,7 +344,7 @@
       <li><b>Recorta cada tira horizontalmente</b> por las lineas de puntos.</li>
       <li><b>Dobla por la linea vertical del centro hacia atras</b> - con los textos hacia fuera (anverso a la izquierda, reverso a la derecha).</li>
       <li>Grapa o pega con un toque de pegamento y carta lista.</li>
-      <li>El anverso muestra el evento; dale la vuelta y veras el ano en grande.</li>
+      <li>El anverso muestra el evento; dale la vuelta y veras el año en grande.</li>
     </ol>
   </div>
 
@@ -462,7 +459,7 @@
               <div class="cf-desc">${ev.description}</div>
               ${hints ? `<div class="cf-hint">Pista: ${ev.hint}</div>` : ''}
               <div class="cf-bottom">
-                <span class="cf-year-blank">ANO: ___________</span>
+                <span class="cf-year-blank">AÑO: ___________</span>
               </div>
             </div>
 
@@ -491,7 +488,7 @@
     html += `<div class="sol-sub">${pack.title} · ${events.length} eventos · ordenados cronologicamente</div>`;
     html += `<table class="sol-table">
       <tr>
-        <th>#</th><th>ID</th><th>Ano</th><th>Evento</th>
+        <th>#</th><th>ID</th><th>Año</th><th>Evento</th>
         <th>Categoria</th>
         ${TD.ACHIEVEMENTS ? '' : ''}
       </tr>`;

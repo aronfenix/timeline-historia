@@ -1266,17 +1266,16 @@
       let icon;
       const iconY = compact ? -h / 2 + 12 : -h / 2 + 14;
       try { icon = this.add.image(w / 2 - 12, iconY, ev.icon || 'scroll').setScale(compact ? 0.5 : 0.58).setAlpha(compact ? 1 : 0.95); } catch (e) { icon = this.add.circle(w / 2 - 12, iconY, 4, 0xffd700); }
-      const code = this.add.text(-w / 2 + 6, -h / 2 + 4, ev.id, { fontFamily: 'Nunito', fontSize: compact ? '10px' : '12px', color: '#f7f0de', fontStyle: '800' });
       const title = this.add.text(0, compact ? -4 : 10, ev.title, { fontFamily: 'Nunito', fontSize: compact ? '12px' : '17px', fontStyle: '900', color: '#fff5de', align: 'center', wordWrap: { width: w - 16, useAdvancedWrap: true } }).setOrigin(0.5);
       let desc = null;
       if (!compact) desc = this.add.text(0, 58, ev.description, { fontFamily: 'Nunito', fontSize: '12px', fontStyle: '700', color: '#dde4ff', align: 'center', wordWrap: { width: w - 24, useAdvancedWrap: true } }).setOrigin(0.5);
       const ytW = compact ? w * 0.75 : w * 0.55;
       const ytag = this.add.rectangle(0, h / 2 - 14, ytW, compact ? 18 : 22, 0x0d1829, 0.9).setStrokeStyle(1, 0xffd700, 0.6);
-      const ytxt = this.add.text(0, h / 2 - 14, revealYear ? String(ev.year) : 'Ano ?', { fontFamily: 'Bungee', fontSize: compact ? '12px' : '16px', color: revealYear ? '#ffd700' : '#88aacc' }).setOrigin(0.5);
+      const ytxt = this.add.text(0, h / 2 - 14, revealYear ? String(ev.year) : 'Año ?', { fontFamily: 'Bungee', fontSize: compact ? '12px' : '16px', color: revealYear ? '#ffd700' : '#88aacc' }).setOrigin(0.5);
       const els = [back];
       if (hero) els.push(hero);
       if (heroShade) els.push(heroShade);
-      els.push(accent, icon, code, title, ytag, ytxt);
+      els.push(accent, icon, title, ytag, ytxt);
       if (desc) els.push(desc);
       c.add(els);
       c.setData('yearText', ytxt);
@@ -1695,7 +1694,7 @@
       this.add.rectangle(W / 2, H / 2, W, H, 0x060d1a);
       FX.createFloatingParticles(this, 25, 0xffd700);
 
-      this.add.text(W / 2, 35, '\u{1F3AF} ADIVINA EL ANO', { fontFamily: 'Bungee', fontSize: '34px', color: '#ffd700' }).setOrigin(0.5);
+      this.add.text(W / 2, 35, '\u{1F3AF} ADIVINA EL AÑO', { fontFamily: 'Bungee', fontSize: '34px', color: '#ffd700' }).setOrigin(0.5);
 
       // Pick 5 random events from the pack
       const pack = TD.getPack(this.d.packId || 'edad_moderna');
@@ -1829,13 +1828,13 @@
 
         // Show result
         const resultY = 480;
-        const correctText = this.add.text(W / 2, resultY, `Ano correcto: ${ev.year}`, {
+        const correctText = this.add.text(W / 2, resultY, `Año correcto: ${ev.year}`, {
           fontFamily: 'Bungee', fontSize: '26px', color: '#ffd700'
         }).setOrigin(0.5).setAlpha(0);
         this.guessItems.push(correctText);
         this.tweens.add({ targets: correctText, alpha: 1, duration: 300 });
 
-        const diffText = this.add.text(W / 2, resultY + 40, diff === 0 ? '\u00A1Exacto! +10' : `Diferencia: ${diff} anos | +${pts} puntos`, {
+        const diffText = this.add.text(W / 2, resultY + 40, diff === 0 ? '\u00A1Exacto! +10' : `Diferencia: ${diff} años | +${pts} puntos`, {
           fontFamily: 'Nunito', fontSize: '20px', color: diff === 0 ? '#6bcb77' : (pts >= 6 ? '#88ccff' : '#ff8c42'), fontStyle: '800'
         }).setOrigin(0.5).setAlpha(0);
         this.guessItems.push(diffText);
