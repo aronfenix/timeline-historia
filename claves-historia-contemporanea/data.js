@@ -2,56 +2,56 @@ window.HC_TYPES = {
   acontecimiento: {
     label: "Hito político",
     icon: "assets/icons/acontecimiento.webp",
-    template: "assets/templates/acontecimiento.webp",
+    template: "assets/templates/acontecimiento.webp?v=20260510b",
     color: "#b94b3f",
     sections: ["Qué pasó", "Cuándo y dónde", "Qué se veía en ese momento", "Qué cambió después", "Qué idea grande explica", "Imagen o fuente"]
   },
   conflicto: {
     label: "Conflicto",
     icon: "assets/icons/conflicto.webp",
-    template: "assets/templates/conflicto.webp",
+    template: "assets/templates/conflicto.webp?v=20260510b",
     color: "#1f4961",
     sections: ["Qué enfrentó", "Cuándo y dónde", "Una escena para recordarlo", "Consecuencias humanas", "Qué nos enseña hoy", "Mapa o imagen"]
   },
   documento: {
     label: "Documento",
     icon: "assets/icons/documento.webp",
-    template: "assets/templates/documento.webp",
+    template: "assets/templates/documento.webp?v=20260510b",
     color: "#b8862d",
     sections: ["Qué documento es", "Cuándo y dónde nació", "Una frase o idea clave", "Qué cambió", "Qué debate abre", "Fragmento o imagen"]
   },
   concepto: {
     label: "Idea en acción",
     icon: "assets/icons/concepto.webp",
-    template: "assets/templates/concepto.webp",
+    template: "assets/templates/concepto.webp?v=20260510b",
     color: "#18344a",
     sections: ["Qué idea aparece aquí", "Cuándo y dónde", "La pequeña historia", "Qué explica de su época", "Dónde se nota hoy", "Tres palabras clave"]
   },
   institucion: {
     label: "Institución en marcha",
     icon: "assets/icons/institucion.webp",
-    template: "assets/templates/institucion.webp",
+    template: "assets/templates/institucion.webp?v=20260510b",
     color: "#2f5d64",
     sections: ["Qué institución vemos", "Cuándo y dónde", "Qué problema intentaba resolver", "Cómo funcionaba", "Por qué importa hoy", "Símbolo o imagen"]
   },
   sociedad: {
     label: "Vida social y derechos",
     icon: "assets/icons/sociedad.webp",
-    template: "assets/templates/sociedad.webp",
+    template: "assets/templates/sociedad.webp?v=20260510b",
     color: "#7a6a35",
     sections: ["Quiénes vivieron esta historia", "Cuándo y dónde", "Qué problema muestra", "Qué cambió para la gente", "Por qué nos toca hoy", "Testimonio o imagen"]
   },
   economia: {
     label: "Ciencia, tecnología y economía",
     icon: "assets/icons/economia.webp",
-    template: "assets/templates/economia.webp",
+    template: "assets/templates/economia.webp?v=20260510b",
     color: "#437b74",
     sections: ["Qué avance o cambio vemos", "Cuándo y dónde", "La escena concreta", "Cómo transformó la vida", "Relación con hoy", "Objeto o imagen"]
   },
   lugar: {
     label: "Lugar, obra o símbolo",
     icon: "assets/icons/lugar.webp",
-    template: "assets/templates/lugar.webp",
+    template: "assets/templates/lugar.webp?v=20260510b",
     color: "#a84838",
     sections: ["Qué representa", "Cuándo y dónde", "Qué historia guarda", "Qué nos hace entender", "Por qué sigue vivo", "Imagen principal"]
   }
