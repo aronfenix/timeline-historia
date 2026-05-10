@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tu minuto de historia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="#inicio" class="brand">
+      <span class="brand-mark">HC</span>
+      <span>
+        <strong>Tu minuto de historia</strong>
+        <small>72 pequeñas historias para entender el presente</small>
+      </span>
+    </a>
+    <nav class="top-nav" aria-label="Navegación principal">
+      <a href="#claves">Historias</a>
+      <a href="#trabajo">Trabajo</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#plantillas">Plantillas</a>
+      <a href="pautas.html">Pautas</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Proyecto final · 6º Primaria</p>
+        <h1>Elige una historia. Cuéntala en un minuto.</h1>
+        <p class="hero-text">Cada alumno trabaja una historia concreta: una escena, una fecha, un lugar, un documento, una obra, una protesta o un avance que permite explicar algo más grande de la historia contemporánea. El resultado será una hoja visual apaisada y una explicación oral breve, clara y bien situada.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#claves">Ver las 72 historias</a>
+          <a class="btn" href="#trabajo">Cómo hacer el trabajo</a>
+        </div>
+      </div>
+      <div class="hero-panel" aria-label="Resumen del proyecto">
+        <img src="assets/icons/category-sprite.webp" alt="" class="hero-icons">
+        <div class="stats-grid">
+          <div><strong>72</strong><span>historias distintas</span></div>
+          <div><strong>24</strong><span>por clase</span></div>
+          <div><strong>1</strong><span>hoja visual</span></div>
+          <div><strong>8</strong><span>tipos de entrada</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band" id="trabajo">
+      <div class="section-heading">
+        <p class="eyebrow">El producto</p>
+        <h2>Dos partes, una misma historia</h2>
+        <p>La hoja visual sirve para ordenar la investigación. La exposición sirve para explicarla sin leer, como quien cuenta una escena memorable que ayuda a entender una idea grande.</p>
+      </div>
+      <div class="work-grid">
+        <article class="work-card">
+          <span class="work-num">1</span>
+          <h3>Informe histórico visual</h3>
+          <p>Una hoja A4 apaisada, con base visual generada por IA, apartados fijos y una estructura ajustada al tipo de historia: conflicto, documento, idea en acción, institución, ciencia, símbolo...</p>
+          <ul>
+            <li>Información breve, seleccionada y con palabras propias.</li>
+            <li>Una imagen, mapa, símbolo o fuente histórica como pista visual.</li>
+            <li>Secciones pensadas para mirar, leer y exponer.</li>
+          </ul>
+        </article>
+        <article class="work-card">
+          <span class="work-num">2</span>
+          <h3>Exposición oral</h3>
+          <p>Entre 1 y 2 minutos. Empieza con una frase sencilla: <strong>“Voy a hablar de...”</strong>. Después sitúa la historia y explica por qué importa.</p>
+          <ul>
+            <li>No se lee el informe completo.</li>
+            <li>Se usan notas con palabras clave.</li>
+            <li>Debe entenderse aunque quien escuche no sepa nada del tema.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="claves">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Selección equilibrada</p>
+          <h2>Las 72 historias</h2>
+          <p>Cada clase tiene 24 entradas variadas. Todas están ancladas a una fecha, lugar o escena concreta, y cada historia abre una puerta para explicar ideas más amplias.</p>
+        </div>
+        <div class="search-box">
+          <label for="searchInput">Buscar</label>
+          <input id="searchInput" type="search" placeholder="Ej. Ebro, Constitución, Guerra Fría...">
+        </div>
+      </div>
+
+      <div class="filters" id="classFilters" aria-label="Filtrar por clase"></div>
+      <div class="filters type-filters" id="typeFilters" aria-label="Filtrar por tipo"></div>
+      <div class="count-line" id="countLine"></div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+
+    <section class="section band" id="timeline">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">De 1808 a 2011</p>
+          <h2>Timeline de todas las historias</h2>
+          <p>Una línea del tiempo para ver cómo se conectan los hechos. Cada punto enlaza con su guía.</p>
+        </div>
+      </div>
+      <div class="timeline-shell" id="timelineShell"></div>
+    </section>
+
+    <section class="section link-band">
+      <div class="section-heading">
+        <p class="eyebrow">Antes de rellenar</p>
+        <h2>Pautas para la hoja y la exposición</h2>
+        <p>Hay una página aparte con pasos, frases de ayuda y criterios para completar la parte escrita y preparar el minuto oral.</p>
+        <a class="btn primary" href="pautas.html">Abrir pautas</a>
+      </div>
+    </section>
+
+    <section class="section band" id="plantillas">
+      <div class="section-heading">
+        <p class="eyebrow">Informe apaisado</p>
+        <h2>Hojas visuales por tipo de historia</h2>
+        <p>Cada hoja tiene una base generada por IA y apartados distintos según lo que se vaya a explicar. Se puede imprimir la hoja elegida desde el navegador.</p>
+      </div>
+      <div class="template-tabs" id="templateTabs"></div>
+      <div id="templatePreview"></div>
+      <div class="print-actions">
+        <button class="btn primary" id="printTemplate">Imprimir plantilla activa</button>
+      </div>
+    </section>
+
+    <section class="section" id="oral">
+      <div class="section-heading">
+        <p class="eyebrow">Guion oral</p>
+        <h2>Explicar bien en 1 o 2 minutos</h2>
+        <p>La exposición no es recitar datos. Es hacer comprensible una historia concreta que abre una idea grande.</p>
+      </div>
+      <div class="oral-grid">
+        <article class="oral-step"><span>1</span><h3>Entrada</h3><p>“Voy a hablar de...” y una frase que diga qué tipo de historia es.</p></article>
+        <article class="oral-step"><span>2</span><h3>Tiempo y espacio</h3><p>Cuándo ocurrió o cuándo fue importante, y dónde tuvo más peso.</p></article>
+        <article class="oral-step"><span>3</span><h3>Explicación</h3><p>Qué es, qué pasó o qué significa, usando palabras sencillas.</p></article>
+        <article class="oral-step"><span>4</span><h3>Impacto</h3><p>Qué supuso en su momento: qué cambió, a quién afectó o qué problema abrió.</p></article>
+        <article class="oral-step"><span>5</span><h3>Presente</h3><p>Por qué merece conocerse hoy y qué nos ayuda a entender.</p></article>
+      </div>
+      <div class="script-box">
+        <h3>Guion base</h3>
+        <p>Voy a hablar de una historia llamada <strong>[título]</strong>. Ocurrió en <strong>[fecha]</strong>, en <strong>[lugar]</strong>. Para imaginarla, podemos pensar en <strong>[escena concreta]</strong>. Fue importante porque <strong>[qué cambió o qué problema muestra]</strong>. Hoy merece conocerse porque <strong>[qué nos ayuda a entender]</strong>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Proyecto de Historia Contemporánea · Informe visual + exposición oral · CEIP Perú</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
