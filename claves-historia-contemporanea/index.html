@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260512a">
 </head>
 <body>
   <header class="site-header">
@@ -20,6 +20,7 @@
     </a>
     <nav class="top-nav" aria-label="Navegación principal">
       <a href="#claves">Historias</a>
+      <a href="#sorteo">Sorteo</a>
       <a href="#trabajo">Trabajo</a>
       <a href="#timeline">Timeline</a>
       <a href="#plantillas">Plantillas</a>
@@ -98,6 +99,39 @@
       <div class="cards-grid" id="cardsGrid"></div>
     </section>
 
+    <section class="section band" id="sorteo">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Para el profesor</p>
+          <h2>Sorteo rápido de temas</h2>
+          <p>Pega los nombres de pila, elige la clase y prueba sorteos provisionales. Cuando uno encaje, pulsa guardar y quedará fijado en este navegador.</p>
+        </div>
+      </div>
+      <div class="raffle-layout">
+        <form class="raffle-panel" id="raffleForm">
+          <div class="raffle-row">
+            <label for="raffleClass">Clase</label>
+            <select id="raffleClass">
+              <option value="A">Clase A</option>
+              <option value="B">Clase B</option>
+              <option value="C">Clase C</option>
+            </select>
+          </div>
+          <label for="raffleNames">Nombres de pila</label>
+          <textarea id="raffleNames" rows="10" placeholder="Un nombre por línea o separados por comas"></textarea>
+          <div class="raffle-actions">
+            <button class="btn primary" type="submit">Sortear provisional</button>
+            <button class="btn" type="button" id="saveRaffle" disabled>Guardar sorteo</button>
+            <button class="btn ghost" type="button" id="clearRaffle">Borrar guardado</button>
+          </div>
+          <p class="raffle-help" id="raffleHelp">No se guarda nada hasta que pulses guardar.</p>
+        </form>
+        <div class="raffle-result" id="raffleResult">
+          <p class="empty-state">El resultado aparecerá aquí.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="section band" id="timeline">
       <div class="section-heading split">
         <div>
@@ -155,7 +189,7 @@
     <p>Proyecto de Historia Contemporánea · Informe visual + exposición oral · CEIP Perú</p>
   </footer>
 
-  <script src="data.js?v=20260510b"></script>
-  <script src="app.js?v=20260510b"></script>
+  <script src="data.js?v=20260512a"></script>
+  <script src="app.js?v=20260512a"></script>
 </body>
 </html>

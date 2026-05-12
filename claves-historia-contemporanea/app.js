@@ -6,7 +6,8 @@
     classFilter: "todas",
     typeFilter: "todos",
     query: "",
-    activeTemplate: "acontecimiento"
+    activeTemplate: "acontecimiento",
+    rafflePreview: null
   };
 
   const refs = {
@@ -18,8 +19,17 @@
     timelineShell: document.getElementById("timelineShell"),
     templateTabs: document.getElementById("templateTabs"),
     templatePreview: document.getElementById("templatePreview"),
-    printTemplate: document.getElementById("printTemplate")
+    printTemplate: document.getElementById("printTemplate"),
+    raffleForm: document.getElementById("raffleForm"),
+    raffleClass: document.getElementById("raffleClass"),
+    raffleNames: document.getElementById("raffleNames"),
+    saveRaffle: document.getElementById("saveRaffle"),
+    clearRaffle: document.getElementById("clearRaffle"),
+    raffleHelp: document.getElementById("raffleHelp"),
+    raffleResult: document.getElementById("raffleResult")
   };
+
+  const RAFFLE_KEY = "hc_sorteo_clase_";
 
   function normalize(value) {
     return String(value || "")
@@ -44,6 +54,162 @@
       color: "#334155",
       sections: []
     };
+  }
+
+  function raffleKey(clase) {
+    return `${RAFFLE_KEY}${clase}`;
+  }
+
+  function parseNames(value) {
+    const seen = new Map();
+    return String(value || "")
+      .split(/[\n,;]+/)
+      .map(name => name.trim())
+      .filter(Boolean)
+      .map(name => {
+        const key = normalize(name);
+        const count = seen.get(key) || 0;
+        seen.set(key, count + 1);
+        return count ? `${name} ${count + 1}` : name;
+      });
+  }
+
+  function shuffle(items) {
+    const result = [...items];
+    const cryptoObj = window.crypto || window.msCrypto;
+    for (let i = result.length - 1; i > 0; i--) {
+      let random = Math.random();
+      if (cryptoObj?.getRandomValues) {
+        const buffer = new Uint32Array(1);
+        cryptoObj.getRandomValues(buffer);
+        random = buffer[0] / 4294967296;
+      }
+      const j = Math.floor(random * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+
+  function getClassTopics(clase) {
+    return CLAVES.filter(item => item.clase === clase);
+  }
+
+  function loadSavedRaffle(clase) {
+    try {
+      const raw = localStorage.getItem(raffleKey(clase));
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveRaffleResult(clase, result) {
+    localStorage.setItem(raffleKey(clase), JSON.stringify(result));
+  }
+
+  function clearSavedRaffle(clase) {
+    localStorage.removeItem(raffleKey(clase));
+  }
+
+  function buildRaffleRows(names, clase) {
+    const topics = shuffle(getClassTopics(clase));
+    return names.map((name, index) => ({
+      name,
+      topicId: topics[index].id
+    }));
+  }
+
+  function getTopicById(id) {
+    return CLAVES.find(item => Number(item.id) === Number(id));
+  }
+
+  function renderRaffle(result, mode = "empty") {
+    if (!refs.raffleResult) return;
+
+    if (!result?.rows?.length) {
+      refs.raffleResult.innerHTML = `<p class="empty-state">El resultado aparecerá aquí.</p>`;
+      refs.saveRaffle.disabled = true;
+      refs.raffleHelp.textContent = "No se guarda nada hasta que pulses guardar.";
+      return;
+    }
+
+    const saved = mode === "saved";
+    refs.saveRaffle.disabled = saved;
+    refs.raffleHelp.textContent = saved
+      ? `Sorteo guardado para la clase ${result.clase}. Se conserva en este navegador.`
+      : "Sorteo provisional. Puedes repetirlo o guardarlo cuando te encaje.";
+
+    refs.raffleResult.innerHTML = `
+      <div class="raffle-result-head">
+        <div>
+          <p class="eyebrow">${saved ? "Guardado" : "Provisional"} · Clase ${escapeHtml(result.clase)}</p>
+          <h3>${result.rows.length} asignaciones</h3>
+        </div>
+        <span>${escapeHtml(result.createdAt || "")}</span>
+      </div>
+      <div class="raffle-table-wrap">
+        <table class="raffle-table">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Tema</th>
+              <th>Tipo</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${result.rows.map(row => {
+              const topic = getTopicById(row.topicId);
+              const type = getType(topic?.tipo);
+              return `
+                <tr>
+                  <td>${escapeHtml(row.name)}</td>
+                  <td>${topic ? `<a href="detalle.html?id=${topic.id}">${escapeHtml(topic.titulo)}</a>` : "Tema no encontrado"}</td>
+                  <td>${escapeHtml(type.label)}</td>
+                  <td>${escapeHtml(topic?.periodo || "")}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function refreshSavedRaffle() {
+    if (!refs.raffleClass) return;
+    state.rafflePreview = null;
+    const saved = loadSavedRaffle(refs.raffleClass.value);
+    renderRaffle(saved, saved ? "saved" : "empty");
+  }
+
+  function runRaffle(event) {
+    event.preventDefault();
+    const clase = refs.raffleClass.value;
+    const names = parseNames(refs.raffleNames.value);
+    const topics = getClassTopics(clase);
+
+    if (!names.length) {
+      refs.raffleResult.innerHTML = `<p class="empty-state">Pega primero los nombres.</p>`;
+      refs.saveRaffle.disabled = true;
+      refs.raffleHelp.textContent = "Puedes escribir un nombre por línea o separarlos por comas.";
+      return;
+    }
+
+    if (names.length > topics.length) {
+      refs.raffleResult.innerHTML = `<p class="empty-state">Hay ${names.length} nombres y solo ${topics.length} temas en la clase ${escapeHtml(clase)}.</p>`;
+      refs.saveRaffle.disabled = true;
+      refs.raffleHelp.textContent = "Reduce nombres o reparte algún tema manualmente.";
+      return;
+    }
+
+    const result = {
+      clase,
+      createdAt: new Date().toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" }),
+      rows: buildRaffleRows(names, clase)
+    };
+    state.rafflePreview = result;
+    renderRaffle(result, "preview");
   }
 
   function renderClassFilters() {
@@ -273,6 +439,32 @@
     });
 
     refs.printTemplate.addEventListener("click", () => window.print());
+
+    if (refs.raffleForm) {
+      refs.raffleForm.addEventListener("submit", runRaffle);
+      refs.raffleClass.addEventListener("change", refreshSavedRaffle);
+
+      refs.saveRaffle.addEventListener("click", () => {
+        if (!state.rafflePreview) return;
+        const saved = loadSavedRaffle(state.rafflePreview.clase);
+        if (saved && !window.confirm(`Ya hay un sorteo guardado para la clase ${state.rafflePreview.clase}. ¿Quieres sustituirlo?`)) return;
+        saveRaffleResult(state.rafflePreview.clase, state.rafflePreview);
+        renderRaffle(state.rafflePreview, "saved");
+        state.rafflePreview = null;
+      });
+
+      refs.clearRaffle.addEventListener("click", () => {
+        const clase = refs.raffleClass.value;
+        const saved = loadSavedRaffle(clase);
+        if (!saved) {
+          refreshSavedRaffle();
+          return;
+        }
+        if (!window.confirm(`¿Borrar el sorteo guardado de la clase ${clase}?`)) return;
+        clearSavedRaffle(clase);
+        refreshSavedRaffle();
+      });
+    }
   }
 
   function init() {
@@ -283,6 +475,7 @@
     renderTemplateTabs();
     renderTemplate();
     setupEvents();
+    refreshSavedRaffle();
   }
 
   init();

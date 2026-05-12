@@ -359,6 +359,136 @@ h1 {
   font-weight: 700;
 }
 
+.raffle-layout {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.raffle-panel,
+.raffle-result {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 12px 32px rgba(31, 41, 55, 0.08);
+}
+
+.raffle-panel {
+  padding: 1.2rem;
+}
+
+.raffle-panel label {
+  display: block;
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.raffle-panel select,
+.raffle-panel textarea {
+  width: 100%;
+  border: 1px solid #d7cdbc;
+  border-radius: 0.12rem;
+  background: #fffdf7;
+  color: var(--ink);
+  font: inherit;
+  padding: 0.8rem 0.9rem;
+}
+
+.raffle-panel textarea {
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.raffle-row {
+  margin-bottom: 1rem;
+}
+
+.raffle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.btn.ghost {
+  background: transparent;
+  box-shadow: none;
+}
+
+.raffle-help,
+.empty-state {
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.raffle-result {
+  min-height: 18rem;
+  padding: 1rem;
+}
+
+.raffle-result-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.raffle-result-head h3 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+
+.raffle-result-head span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.raffle-table-wrap {
+  overflow: auto;
+}
+
+.raffle-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 42rem;
+}
+
+.raffle-table th,
+.raffle-table td {
+  border-bottom: 1px solid #eadfce;
+  padding: 0.62rem 0.55rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.raffle-table th {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.raffle-table td {
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.raffle-table a {
+  color: var(--navy);
+  font-weight: 900;
+}
+
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -907,6 +1037,7 @@ h1 {
 @media (max-width: 980px) {
   .hero,
   .work-grid,
+  .raffle-layout,
   .section-heading.split {
     grid-template-columns: 1fr;
   }
@@ -978,6 +1109,7 @@ h1 {
   .hero,
   #trabajo,
   #claves,
+  #sorteo,
   #timeline,
   #oral,
   .link-band,
