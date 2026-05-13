@@ -118,12 +118,12 @@ window.HC_CLAVES = [
     "id": 1,
     "clase": "A",
     "tipo": "acontecimiento",
-    "titulo": "Madrid se levanta el 2 de mayo",
-    "periodo": "2 de mayo de 1808",
-    "lugar": "Madrid",
-    "resumen": "El levantamiento popular contra las tropas francesas abrió la Guerra de la Independencia.",
-    "foco": "Sirve para hablar de invasión napoleónica, resistencia popular y crisis del Antiguo Régimen.",
-    "escena": "Una ciudad ocupada estalla cuando la gente ve marcharse a la familia real."
+    "titulo": "Japón inicia la Restauración Meiji",
+    "periodo": "1868",
+    "lugar": "Japón",
+    "resumen": "El poder volvió formalmente al emperador y Japón comenzó una modernización política, militar e industrial rapidísima.",
+    "foco": "Sirve para hablar de industrialización, imperialismo, reformas del Estado y choque entre tradición y modernidad.",
+    "escena": "Un país que había vivido muy cerrado mira hacia las potencias industriales y decide transformarse a toda velocidad."
   },
   {
     "id": 2,
@@ -217,12 +217,12 @@ window.HC_CLAVES = [
     "id": 10,
     "clase": "A",
     "tipo": "concepto",
-    "titulo": "Fernando VII rompe la Constitución",
-    "periodo": "1814",
-    "lugar": "España",
-    "resumen": "Al volver al trono, Fernando VII abolió la Constitución de Cádiz y restauró el absolutismo.",
-    "foco": "Una escena concreta para entender absolutismo frente a liberalismo.",
-    "escena": "El rey regresa y borra de golpe el texto que prometía limitar su poder."
+    "titulo": "La Comuna de París levanta barricadas",
+    "periodo": "1871",
+    "lugar": "París",
+    "resumen": "Durante unas semanas, sectores populares de París intentaron gobernar la ciudad con ideas republicanas y obreras.",
+    "foco": "Permite hablar de movimiento obrero, revolución social, miedo de las élites y conflictos urbanos del siglo XIX.",
+    "escena": "Una ciudad derrotada en la guerra se llena de barricadas y ensaya otra forma de poder."
   },
   {
     "id": 11,
@@ -250,12 +250,12 @@ window.HC_CLAVES = [
     "id": 13,
     "clase": "A",
     "tipo": "institucion",
-    "titulo": "Las Cortes de Cádiz se reúnen",
-    "periodo": "1810-1812",
-    "lugar": "Cádiz",
-    "resumen": "Representantes de distintos territorios asumieron la tarea de organizar el país y redactar una Constitución.",
-    "foco": "Permite explicar representación política, guerra y nacimiento de nuevas instituciones.",
-    "escena": "Mientras hay guerra, una asamblea discute cómo debe gobernarse España."
+    "titulo": "La Internacional llega a España",
+    "periodo": "1868",
+    "lugar": "Madrid y Barcelona",
+    "resumen": "Las ideas de la Asociación Internacional de Trabajadores empezaron a organizar a obreros españoles tras la Gloriosa.",
+    "foco": "Ayuda a explicar movimiento obrero, anarquismo, socialismo y nuevas formas de organización política y sindical.",
+    "escena": "Un emisario extranjero se reúne con trabajadores que buscan organizarse más allá de su ciudad o su oficio."
   },
   {
     "id": 14,
@@ -382,12 +382,12 @@ window.HC_CLAVES = [
     "id": 25,
     "clase": "B",
     "tipo": "acontecimiento",
-    "titulo": "Las abdicaciones de Bayona",
-    "periodo": "1808",
-    "lugar": "Bayona",
-    "resumen": "Napoleón forzó la renuncia de Carlos IV y Fernando VII y colocó a su hermano José como rey.",
-    "foco": "Explica el vacío de poder que encendió la Guerra de la Independencia.",
-    "escena": "Un emperador extranjero decide el trono español lejos de España."
+    "titulo": "La Primera República se proclama",
+    "periodo": "1873",
+    "lugar": "Madrid",
+    "resumen": "Tras la renuncia de Amadeo I, las Cortes proclamaron la Primera República española.",
+    "foco": "Permite explicar el Sexenio Democrático, republicanismo, federalismo e inestabilidad política del siglo XIX.",
+    "escena": "Después de una revolución y de un rey sin apoyos, las Cortes prueban una forma nueva de gobierno."
   },
   {
     "id": 26,
@@ -525,12 +525,12 @@ window.HC_CLAVES = [
     "id": 38,
     "clase": "B",
     "tipo": "institucion",
-    "titulo": "España vota sobre la OTAN",
-    "periodo": "1986",
-    "lugar": "España",
-    "resumen": "Un referéndum decidió la permanencia de España en la alianza atlántica.",
-    "foco": "Sirve para hablar de Guerra Fría, seguridad internacional y participación ciudadana.",
-    "escena": "Una pregunta de política internacional llega a las papeletas de todos los votantes."
+    "titulo": "Nace la Institución Libre de Enseñanza",
+    "periodo": "1876",
+    "lugar": "Madrid",
+    "resumen": "Un grupo de profesores creó una institución educativa independiente, defensora de la libertad de enseñanza.",
+    "foco": "Sirve para hablar de educación, ciencia, modernización cultural y debates sobre libertad en la España de la Restauración.",
+    "escena": "Profesores apartados de la universidad oficial deciden crear una escuela con otra manera de enseñar."
   },
   {
     "id": 39,
