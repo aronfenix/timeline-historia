@@ -10,6 +10,39 @@
     rafflePreview: null
   };
 
+  const COMMON_TEMPLATE = "assets/templates/documento-comun-historia.png";
+  const OFFICIAL_RAFFLES = [
+    {
+      clase: "C",
+      createdAt: "Sorteo oficial de 6º C",
+      official: true,
+      rows: [
+        { name: "David", topicId: 59 },
+        { name: "Erick", topicId: 54 },
+        { name: "Aitor", topicId: 53 },
+        { name: "CarolLeilani", topicId: 70 },
+        { name: "EmanuelBryan", topicId: 66 },
+        { name: "Eli", topicId: 68 },
+        { name: "Pisco", topicId: 61 },
+        { name: "Santiago", topicId: 49 },
+        { name: "CAnde", topicId: 55 },
+        { name: "Pacheco", topicId: 62 },
+        { name: "Rubi", topicId: 71 },
+        { name: "Nerea", topicId: 65 },
+        { name: "Bridget", topicId: 64 },
+        { name: "Houda", topicId: 69 },
+        { name: "Ian", topicId: 50 },
+        { name: "Lucas", topicId: 51 },
+        { name: "María", topicId: 72 },
+        { name: "Valentino", topicId: 57 },
+        { name: "Diego", topicId: 60 },
+        { name: "Joaquín", topicId: 67 },
+        { name: "Allizon", topicId: 56 },
+        { name: "Helymar", topicId: 52 }
+      ]
+    }
+  ];
+
   const refs = {
     classFilters: document.getElementById("classFilters"),
     typeFilters: document.getElementById("typeFilters"),
@@ -26,7 +59,8 @@
     saveRaffle: document.getElementById("saveRaffle"),
     clearRaffle: document.getElementById("clearRaffle"),
     raffleHelp: document.getElementById("raffleHelp"),
-    raffleResult: document.getElementById("raffleResult")
+    raffleResult: document.getElementById("raffleResult"),
+    savedRaffles: document.getElementById("savedRaffles")
   };
 
   const RAFFLE_KEY = "hc_sorteo_clase_";
@@ -103,6 +137,10 @@
     }
   }
 
+  function getOfficialRaffle(clase) {
+    return OFFICIAL_RAFFLES.find(result => result.clase === clase) || null;
+  }
+
   function saveRaffleResult(clase, result) {
     localStorage.setItem(raffleKey(clase), JSON.stringify(result));
   }
@@ -134,15 +172,18 @@
     }
 
     const saved = mode === "saved";
-    refs.saveRaffle.disabled = saved;
-    refs.raffleHelp.textContent = saved
+    const official = mode === "official";
+    refs.saveRaffle.disabled = saved || official;
+    refs.raffleHelp.textContent = official
+      ? `Sorteo oficial de la clase ${result.clase}. Está publicado para consulta.`
+      : saved
       ? `Sorteo guardado para la clase ${result.clase}. Se conserva en este navegador.`
       : "Sorteo provisional. Puedes repetirlo o guardarlo cuando te encaje.";
 
     refs.raffleResult.innerHTML = `
       <div class="raffle-result-head">
         <div>
-          <p class="eyebrow">${saved ? "Guardado" : "Provisional"} · Clase ${escapeHtml(result.clase)}</p>
+          <p class="eyebrow">${official ? "Oficial" : saved ? "Guardado" : "Provisional"} · Clase ${escapeHtml(result.clase)}</p>
           <h3>${result.rows.length} asignaciones</h3>
         </div>
         <span>${escapeHtml(result.createdAt || "")}</span>
@@ -176,11 +217,117 @@
     `;
   }
 
+  function getSavedRaffles() {
+    return ["A", "B", "C"]
+      .map(clase => loadSavedRaffle(clase) || getOfficialRaffle(clase))
+      .filter(result => result?.rows?.length);
+  }
+
+  function resultToText(result) {
+    const lines = [
+      `Clase ${result.clase} · ${result.createdAt || ""}`,
+      "Alumno\tTema\tTipo\tFecha"
+    ];
+    result.rows.forEach(row => {
+      const topic = getTopicById(row.topicId);
+      const type = getType(topic?.tipo);
+      lines.push(`${row.name}\t${topic?.titulo || ""}\t${type.label}\t${topic?.periodo || ""}`);
+    });
+    return lines.join("\n");
+  }
+
+  function resultToCsv(result) {
+    const escapeCsv = value => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const lines = [["Alumno", "Tema", "Tipo", "Fecha", "Clase"].map(escapeCsv).join(",")];
+    result.rows.forEach(row => {
+      const topic = getTopicById(row.topicId);
+      const type = getType(topic?.tipo);
+      lines.push([row.name, topic?.titulo || "", type.label, topic?.periodo || "", result.clase].map(escapeCsv).join(","));
+    });
+    return lines.join("\n");
+  }
+
+  function downloadText(filename, content, mime = "text/plain") {
+    const blob = new Blob([content], { type: `${mime};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function renderSavedRaffles() {
+    if (!refs.savedRaffles) return;
+    const saved = getSavedRaffles();
+    if (!saved.length) {
+      refs.savedRaffles.innerHTML = `
+        <div class="saved-raffles-head">
+          <div>
+            <p class="eyebrow">Consulta</p>
+          <h3>Sorteos consultables</h3>
+          </div>
+        </div>
+        <p class="empty-state">Todavía no hay sorteos guardados o publicados.</p>
+      `;
+      return;
+    }
+
+    refs.savedRaffles.innerHTML = `
+      <div class="saved-raffles-head">
+        <div>
+          <p class="eyebrow">Consulta</p>
+          <h3>Sorteos consultables</h3>
+        </div>
+        <span>${saved.length} clase${saved.length === 1 ? "" : "s"}</span>
+      </div>
+      <div class="saved-raffle-list">
+        ${saved.map(result => `
+          <article class="saved-raffle-card">
+            <div class="saved-raffle-title">
+              <div>
+                <strong>${result.official ? `Sorteo oficial de 6º ${escapeHtml(result.clase)}` : `Clase ${escapeHtml(result.clase)}`}</strong>
+                <small>${escapeHtml(result.createdAt || "")} · ${result.rows.length} asignaciones</small>
+              </div>
+              <div class="saved-raffle-actions">
+                <button class="btn ghost" type="button" data-copy-raffle="${escapeHtml(result.clase)}">Copiar</button>
+                <button class="btn ghost" type="button" data-download-raffle="${escapeHtml(result.clase)}">CSV</button>
+              </div>
+            </div>
+            <div class="raffle-table-wrap">
+              <table class="raffle-table compact">
+                <thead><tr><th>Alumno</th><th>Tema</th><th>Fecha</th></tr></thead>
+                <tbody>
+                  ${result.rows.map(row => {
+                    const topic = getTopicById(row.topicId);
+                    return `
+                      <tr>
+                        <td>${escapeHtml(row.name)}</td>
+                        <td>${topic ? `<a href="detalle.html?id=${topic.id}">${escapeHtml(topic.titulo)}</a>` : "Tema no encontrado"}</td>
+                        <td>${escapeHtml(topic?.periodo || "")}</td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    `;
+  }
+
   function refreshSavedRaffle() {
     if (!refs.raffleClass) return;
     state.rafflePreview = null;
-    const saved = loadSavedRaffle(refs.raffleClass.value);
-    renderRaffle(saved, saved ? "saved" : "empty");
+    const clase = refs.raffleClass.value;
+    const saved = loadSavedRaffle(clase);
+    const official = getOfficialRaffle(clase);
+    const result = saved || official;
+    renderRaffle(result, saved ? "saved" : official ? "official" : "empty");
+    renderSavedRaffles();
   }
 
   function runRaffle(event) {
@@ -291,26 +438,19 @@
   }
 
   function renderTemplateTabs() {
-    refs.templateTabs.innerHTML = Object.entries(TYPES).map(([key, info]) => (
-      `<button class="template-tab ${state.activeTemplate === key ? "active" : ""}" data-template="${key}">
-        <img src="${info.icon}" alt="">${escapeHtml(info.label)}
-      </button>`
-    )).join("");
+    refs.templateTabs.innerHTML = "";
   }
 
   function renderTemplate() {
-    const key = state.activeTemplate;
-    const type = getType(key);
-    const examples = CLAVES.filter(item => item.tipo === key).slice(0, 4);
-
     refs.templatePreview.innerHTML = `
-      <article class="report-sheet image-sheet" style="--type-color:${type.color}">
-        <img class="sheet-bg" src="${type.template}" alt="">
+      <article class="report-sheet image-sheet common-template-sheet" style="--type-color:#18344a">
+        <img class="sheet-bg" src="${COMMON_TEMPLATE}" alt="Documento visual de Historia Contemporánea">
       </article>
 
-      <div class="template-note">
-        <strong>Historias de este tipo:</strong>
-        ${examples.map(item => `<span>${escapeHtml(item.titulo)}</span>`).join("")}
+      <div class="template-note template-downloads">
+        <strong>Documento de trabajo:</strong>
+        <a class="btn primary" href="${COMMON_TEMPLATE}" download="documento-historia-contemporanea.png">Descargar PNG en alta calidad</a>
+        <a class="btn" href="${COMMON_TEMPLATE}" target="_blank" rel="noopener">Abrir imagen completa</a>
       </div>
     `;
   }
@@ -450,6 +590,7 @@
         if (saved && !window.confirm(`Ya hay un sorteo guardado para la clase ${state.rafflePreview.clase}. ¿Quieres sustituirlo?`)) return;
         saveRaffleResult(state.rafflePreview.clase, state.rafflePreview);
         renderRaffle(state.rafflePreview, "saved");
+        renderSavedRaffles();
         state.rafflePreview = null;
       });
 
@@ -463,6 +604,30 @@
         if (!window.confirm(`¿Borrar el sorteo guardado de la clase ${clase}?`)) return;
         clearSavedRaffle(clase);
         refreshSavedRaffle();
+      });
+
+      refs.savedRaffles?.addEventListener("click", async event => {
+        const copyBtn = event.target.closest("[data-copy-raffle]");
+        const downloadBtn = event.target.closest("[data-download-raffle]");
+        const clase = copyBtn?.dataset.copyRaffle || downloadBtn?.dataset.downloadRaffle;
+        if (!clase) return;
+
+        const result = loadSavedRaffle(clase) || getOfficialRaffle(clase);
+        if (!result) return;
+
+        if (copyBtn) {
+          const text = resultToText(result);
+          try {
+            await navigator.clipboard.writeText(text);
+            refs.raffleHelp.textContent = `Sorteo de la clase ${clase} copiado.`;
+          } catch {
+            downloadText(`sorteo-clase-${clase}.txt`, text);
+          }
+        }
+
+        if (downloadBtn) {
+          downloadText(`sorteo-clase-${clase}.csv`, resultToCsv(result), "text/csv");
+        }
       });
     }
   }

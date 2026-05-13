@@ -322,6 +322,10 @@ h1 {
   margin-bottom: 0.9rem;
 }
 
+.template-tabs:empty {
+  display: none;
+}
+
 .filter-btn,
 .template-tab {
   display: inline-flex;
@@ -489,6 +493,68 @@ h1 {
   font-weight: 900;
 }
 
+.saved-raffles {
+  margin-top: 1.2rem;
+  border-top: 2px solid var(--line);
+  padding-top: 1rem;
+}
+
+.saved-raffles-head,
+.saved-raffle-title {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.saved-raffles-head h3 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+
+.saved-raffles-head span,
+.saved-raffle-title small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.saved-raffle-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.9rem;
+}
+
+.saved-raffle-card {
+  border-left: 0.35rem solid var(--teal);
+  background: var(--paper);
+  box-shadow: 0 12px 32px rgba(31, 41, 55, 0.08);
+  padding: 1rem;
+}
+
+.saved-raffle-title {
+  margin-bottom: 0.75rem;
+}
+
+.saved-raffle-title strong,
+.saved-raffle-title small {
+  display: block;
+}
+
+.saved-raffle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.raffle-table.compact {
+  min-width: 34rem;
+}
+
+.raffle-table.compact td {
+  font-size: 0.86rem;
+}
+
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -631,6 +697,10 @@ h1 {
 
 .image-sheet .report-header {
   display: none;
+}
+
+.common-template-sheet {
+  max-width: 1180px;
 }
 
 .report-header {
@@ -1079,6 +1149,12 @@ h1 {
   .detail-layout,
   .sentence-grid {
     grid-template-columns: 1fr;
+  }
+
+  .raffle-result-head,
+  .saved-raffles-head,
+  .saved-raffle-title {
+    display: grid;
   }
 
   .report-main,
