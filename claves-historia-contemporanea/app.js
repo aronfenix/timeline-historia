@@ -49,6 +49,7 @@
     searchInput: document.getElementById("searchInput"),
     countLine: document.getElementById("countLine"),
     cardsGrid: document.getElementById("cardsGrid"),
+    timelineRange: document.getElementById("timelineRange"),
     timelineShell: document.getElementById("timelineShell"),
     templateTabs: document.getElementById("templateTabs"),
     templatePreview: document.getElementById("templatePreview"),
@@ -532,6 +533,10 @@
   function renderTimeline() {
     if (!refs.timelineShell) return;
     const items = [...CLAVES].sort((a, b) => getTimelineYear(a) - getTimelineYear(b) || a.id - b.id);
+    const years = items.map(getTimelineYear).filter(Boolean);
+    if (refs.timelineRange && years.length) {
+      refs.timelineRange.textContent = `De ${Math.min(...years)} a ${Math.max(...years)}`;
+    }
     refs.timelineShell.innerHTML = items.map(item => {
       const type = getType(item.tipo);
       const year = getTimelineYear(item) || item.periodo;
